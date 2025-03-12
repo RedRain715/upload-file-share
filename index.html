@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Sharing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .upload-form {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .files-list {
+            margin: 20px 0;
+        }
+        .file-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .file-item:hover {
+            background-color: #f8f8f8;
+        }
+        .file-info {
+            flex-grow: 1;
+            margin-right: 20px;
+        }
+        .file-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .file-details {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .flash-messages {
+            margin: 20px 0;
+        }
+        .flash-message {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .flash-message.success {
+            background-color: #dff0d8;
+            border: 1px solid #d6e9c6;
+            color: #3c763d;
+        }
+        .flash-message.error {
+            background-color: #f2dede;
+            border: 1px solid #ebccd1;
+            color: #a94442;
+        }
+        .upload-info {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>File Sharing</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <div class="upload-form">
+            <h2>Upload File</h2>
+            <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" required>
+                <input type="submit" value="Upload" class="button">
+            </form>
+            <div class="upload-info">
+                Maximum file size: 50MB<br>
+                Allowed file types: .txt, .pdf, .png, .jpg, .jpeg, .gif, .doc, .docx, .xls, .xlsx, .zip
+            </div>
+        </div>
+
+        <div class="files-list">
+            <h2>Available Files</h2>
+            {% if files %}
+                {% for file in files %}
+                    <div class="file-item">
+                        <div class="file-info">
+                            <div class="file-name">{{ file.name }}</div>
+                            <div class="file-details">
+                                Size: {{ file.size }} MB | Last modified: {{ file.last_modified }}
+                            </div>
+                        </div>
+                        <a href="{{ file.download_url }}" target="_blank" class="button">Download</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No files available.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html> 
